@@ -106,6 +106,14 @@ function setupConn(connection) {
 			return
 		}
 
+		// Ignore messages already received over another connection
+		if (data.id) {
+			if (seenMessageIds.has(data.id)) {
+				return
+			}
+			seenMessageIds.add(data.id)
+		}
+
 		// Create an untitled contact if the sender is unknown
 		if (!contacts[contactId]) {
 			contacts[contactId] = { name: 'Untitled', unknown: true }
@@ -147,13 +155,17 @@ function connectAll() {
 			return
 		}
 
-		// Discard any stale pending attempt before retrying
+		// Skip contacts with an attempt that started less than 20 seconds ago
 		if (pending[contactId]) {
+			if (Date.now() - pending[contactId].startedAt < 20000) {
+				return
+			}
 			pending[contactId].close()
 		}
 
 		// Start a new connection attempt
 		const connection = peer.connect(contactId, { reliable: true })
+		connection.startedAt = Date.now()
 		pending[contactId] = connection
 		setupConn(connection)
 	})
@@ -184,7 +196,7 @@ function addMessage(contactId, sender, text) {
 	}
 }
 
-// Sends the typed message to the selected contact, or logs a "not sent" notice if they are offline.
+// Sends the typed message over every open connection to the selected contact, or logs a "not sent" notice if they are offline.
 function send() {
 	// Ignore empty messages or no selected contact
 	const text = $('input').value.trim()
@@ -193,14 +205,19 @@ function send() {
 	}
 
 	// Log a notice if there is no open connection
-	const connection = (conns[selected] || [])[0]
-	if (!connection) {
+	const openConnections = conns[selected] || []
+	if (openConnections.length === 0) {
 		addMessage(selected, 'system', 'unsent')
 		return
 	}
 
-	// Send, store, and clear the input
-	connection.send({ text: text })
+	// Send over all open connections with a unique ID; the receiver ignores duplicates
+	const messageId = Date.now() + '-' + Math.random().toString(36).slice(2)
+	openConnections.forEach((connection) => {
+		connection.send({ id: messageId, text: text })
+	})
+
+	// Store and clear the input
 	addMessage(selected, 'me', text)
 	$('input').value = ''
 }
