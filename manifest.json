@@ -1,0 +1,8 @@
+{
+	"manifest_version": 3,
+	"name": "Peer Chat",
+	"version": "1.0",
+	"action": { "default_title": "Peer Chat" },
+	"background": { "service_worker": "background.js" },
+	"permissions": ["storage"]
+}

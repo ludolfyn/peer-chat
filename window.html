@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Peer Chat</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; height: 100vh; display: flex; font-family: Arial, sans-serif; font-size: 14px; }
+    #sidebar { width: 220px; border-right: 1px solid #ccc; display: flex; flex-direction: column; }
+    #myId { padding: 8px; background: #f0f0f0; word-break: break-all; user-select: all; font-size: 12px; }
+    #addBtn { margin: 8px; }
+    #contacts { flex: 1; overflow-y: auto; }
+    .contact { padding: 8px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .contact:hover { background: #f7f7f7; }
+    .contact.selected { background: #dce9ff; }
+    .contact.unknown { background: #fff6d6; border-left: 4px solid #e0a800; }
+    .contact.unknown.selected { background: #ffe9a0; }
+    .status { font-size: 11px; color: #777; }
+    .contact button { font-size: 11px; margin-top: 4px; }
+    #chat { flex: 1; display: flex; flex-direction: column; }
+    #messages { flex: 1; overflow-y: auto; padding: 8px; }
+    #messages div { margin-bottom: 4px; }
+    .system { font-style: italic; color: #777; }
+    #inputRow { display: flex; border-top: 1px solid #ccc; }
+    #input { flex: 1; padding: 8px; border: none; outline: none; }
+    #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+    #modal.hidden { display: none; }
+    #modalBox { background: #fff; padding: 16px; width: 300px; display: flex; flex-direction: column; gap: 8px; }
+    #modalBox textarea { height: 70px; resize: none; }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <div id="myId">Connecting...</div>
+    <button id="addBtn">Add new contact</button>
+    <div id="contacts"></div>
+  </div>
+  <div id="chat">
+    <div id="messages"></div>
+    <div id="inputRow">
+      <input id="input" type="text" placeholder="Type a message" disabled>
+      <button id="sendBtn" disabled>Send</button>
+    </div>
+  </div>
+
+  <div id="modal" class="hidden">
+    <div id="modalBox">
+      <b id="modalTitle">Add new contact</b>
+      <input id="nameInput" type="text" placeholder="User name">
+      <textarea id="idInput" placeholder="User ID"></textarea>
+      <div>
+        <button id="saveBtn">Save</button>
+        <button id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="peerjs.min.js"></script>
+  <script src="window.js"></script>
+</body>
+</html>
