@@ -20,6 +20,7 @@ let editingId = null
 let peer = null
 const conns = {} // contactId -> open connections
 const pending = {} // contactId -> outgoing connection attempt
+const seenMessageIds = new Set() // IDs of received messages, used to ignore duplicates
 
 // Returns true if at least one open connection exists for the contact.
 const isOnline = (contactId) => (conns[contactId] || []).length > 0
