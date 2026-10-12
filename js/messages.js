@@ -26,17 +26,15 @@ function send() {
 	}
 
 	// Log a notice if there is no open connection
-	const openConnections = state.connections[state.selected] || []
-	if (openConnections.length === 0) {
+	const openConnection = state.connections[state.selected]
+	if (!openConnection) {
 		addMessage(state.selected, 'system', 'unsent')
 		return
 	}
 
 	// Send over all open connections with a unique ID; the receiver ignores duplicates
 	const messageId = Date.now() + '-' + Math.random().toString(36).slice(2)
-	openConnections.forEach((connection) => {
-		connection.send({ id: messageId, text: text })
-	})
+	openConnection.send({ id: messageId, text: text })
 
 	// Store and clear the input
 	addMessage(state.selected, 'me', text)

@@ -69,10 +69,10 @@ function setupConn(connection) {
 			delete state.connections[contactId]
 		}
 
-		console.log('--- Opened a new connection with ', state.contacts[contactId].name, state.connections[contactId])
-
 		// Track the open connection
 		state.connections[contactId] = connection
+
+		console.log('--- Opened a new connection with', state.contacts[contactId].name, state.connections[contactId])
 
 		// Log an "online" notice only when the contact changes from offline to online
 		if (contactWasOfflineBeforeConnection && state.contacts[contactId]) {
@@ -116,18 +116,17 @@ function setupConn(connection) {
 	// Handle the connection closing
 	connection.on('close', () => {
 		// Remove the connection from the open list
-		const openConnections = state.connections[contactId]
-		if (!openConnections?.length) {
+		const openConnection = state.connections[contactId]
+		if (!openConnection) {
 			return
 		}
 
-		const index = openConnections.indexOf(connection)
-		openConnections.splice(index, 1)
+		delete state.connections[contactId]
 
-		console.log('openConnections', openConnections, state.connections[contactId])
+		console.log('openConnection', openConnection, state.connections[contactId])
 
 		// Log a "disconnected" notice once no connections remain
-		if (openConnections.length === 0 && state.contacts[contactId]) {
+		if (!openConnection && state.contacts[contactId]) {
 			addMessage(contactId, 'system', 'offline')
 		}
 		renderContacts()

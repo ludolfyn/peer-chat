@@ -40,12 +40,9 @@ function deleteContact(contactId) {
 		return
 	}
 
-	// Close open connections
-	const openConnections = state.connections[contactId] || []
+	// Close open connection
+	state.connections[contactId].close()
 	delete state.connections[contactId]
-	openConnections.forEach((connection) => {
-		connection.close()
-	})
 
 	// Close any pending connection attempt
 	if (state.pending[contactId]) {
