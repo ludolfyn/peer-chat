@@ -1,4 +1,5 @@
 // Returns the DOM element with the given ID.
-const $ = (elementId) => document.getElementById(elementId)
+const $ = (selector, ancestor = document) => ancestor.querySelector(selector)
+const $all = (selector, ancestor = document) => ancestor.querySelectorAll(selector)
 
-export { $ }
+export { $, $all }

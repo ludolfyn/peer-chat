@@ -16,15 +16,15 @@ window.addEventListener('beforeunload', () => {
 })
 
 // --- UI ---
-$('addBtn').onclick = () => {
+$('#addBtn').onclick = () => {
 	openModal()
 }
-$('saveBtn').onclick = saveContact
-$('cancelBtn').onclick = closeModal
-$('sendBtn').onclick = send
+$('#saveBtn').onclick = saveContact
+$('#cancelBtn').onclick = closeModal
+$('#sendBtn').onclick = send
 
 // Send the message when Enter is pressed in the input
-$('input').addEventListener('keydown', (event) => {
+$('#input').addEventListener('keydown', (event) => {
 	if (event.key === 'Enter') {
 		send()
 	}

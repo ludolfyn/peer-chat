@@ -4,7 +4,7 @@ import { isOnline } from './contacts.js'
 
 // Rebuilds the contact list with names, online status, and rename/delete buttons for unknown contacts.
 function renderContacts() {
-	const list = $('contacts')
+	const list = $('#contacts')
 	list.innerHTML = ''
 
 	Object.entries(state.contacts).forEach(([contactId, contact]) => {
@@ -50,11 +50,11 @@ function renderContacts() {
 
 // Rebuilds the chat panel with the selected contact's messages and system notices.
 function renderChat() {
-	const box = $('messages')
+	const box = $('#messages')
 	box.innerHTML = ''
 
 	// Enable the input only when a contact is selected
-	$('input').disabled = $('sendBtn').disabled = !state.selected
+	$('#input').disabled = $('#sendBtn').disabled = !state.selected
 	if (!state.selected) {
 		box.textContent = 'Select a contact.'
 		return
@@ -93,7 +93,7 @@ function selectContact(contactId) {
 	state.selected = contactId
 	renderContacts()
 	renderChat()
-	$('input').focus()
+	$('#input').focus()
 }
 
 // Opens the contact modal; with a contact ID it acts as a rename dialog with the ID locked.
@@ -101,21 +101,21 @@ function openModal(contactId) {
 	state.editingId = contactId || null
 
 	// Title depends on add or rename mode
-	$('modalTitle').textContent = contactId ? 'Rename contact' : 'Add new contact'
+	$('#modalTitle').textContent = contactId ? 'Rename contact' : 'Add new contact'
 
 	// Prefill fields; unknown contacts start with an empty name
-	$('nameInput').value = contactId && !state.contacts[contactId].unknown ? state.contacts[contactId].name : ''
-	$('idInput').value = contactId || ''
-	$('idInput').readOnly = !!contactId
+	$('#nameInput').value = contactId && !state.contacts[contactId].unknown ? state.contacts[contactId].name : ''
+	$('#idInput').value = contactId || ''
+	$('#idInput').readOnly = !!contactId
 
 	// Show the modal
-	$('modal').classList.remove('hidden')
-	$('nameInput').focus()
+	$('#modal').classList.remove('hidden')
+	$('#nameInput').focus()
 }
 
 // Hides the contact modal and resets the editing state.
 function closeModal() {
-	$('modal').classList.add('hidden')
+	$('#modal').classList.add('hidden')
 	state.editingId = null
 }
 

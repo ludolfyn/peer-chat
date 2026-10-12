@@ -13,7 +13,7 @@ function startPeer() {
 	// Save and display the ID once connected to the peer network, then look for contacts
 	state.peer.on('open', (peerId) => {
 		localStorage.setItem('peerId', peerId)
-		$('myId').textContent = peerId
+		$('#myId').textContent = peerId
 		connectAll()
 	})
 
@@ -40,7 +40,7 @@ function startPeer() {
 			}
 		} else if (error.type === 'unavailable-id') {
 			// The saved ID is still registered on the server: retry shortly
-			$('myId').textContent = 'ID in use, retrying...'
+			$('#myId').textContent = 'ID in use, retrying...'
 			state.peer.destroy()
 			setTimeout(startPeer, 3000)
 		}

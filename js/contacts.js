@@ -5,8 +5,8 @@ const isOnline = (contactId) => (state.connections[contactId] || []).length > 0
 
 // Validates and saves the contact from the modal, then refreshes the UI and attempts to connect.
 function saveContact() {
-	const name = $('nameInput').value.trim()
-	const contactId = $('idInput').value.trim()
+	const name = $('#nameInput').value.trim()
+	const contactId = $('#idInput').value.trim()
 
 	// Validate input
 	if (!name || !contactId) {

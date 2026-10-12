@@ -20,7 +20,7 @@ function addMessage(contactId, sender, text) {
 // Sends the typed message over every open connection to the selected contact, or logs a "not sent" notice if they are offline.
 function send() {
 	// Ignore empty messages or no selected contact
-	const text = $('input').value.trim()
+	const text = $('#input').value.trim()
 	if (!text || !state.selected) {
 		return
 	}
@@ -40,7 +40,7 @@ function send() {
 
 	// Store and clear the input
 	addMessage(state.selected, 'me', text)
-	$('input').value = ''
+	$('#input').value = ''
 }
 
 export { addMessage, send }
