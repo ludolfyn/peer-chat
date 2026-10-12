@@ -42,7 +42,10 @@ function startPeer() {
 			// The saved ID is still registered on the server: retry shortly
 			$('#myId').textContent = 'ID in use, retrying...'
 			state.peer.destroy()
-			setTimeout(startPeer, 3000)
+			const timeout = setTimeout(() => {
+				startPeer()
+				clearTimeout(timeout)
+			}, 3000)
 		}
 	})
 }
@@ -53,20 +56,26 @@ function setupConn(connection) {
 
 	// Marks the contact as online once the connection is open.
 	const onOpen = () => {
-		// Track the open connection
-		const wasOnline = isOnline(contactId)
-		state.connections[contactId] = state.connections[contactId] || []
-		state.connections[contactId].push(connection)
-
-		console.log('connection.contactId', state.connections[contactId])
+		const contactWasOfflineBeforeConnection = !isOnline(contactId)
 
 		// Clear the pending attempt if this connection was one
 		if (state.pending[contactId] === connection) {
 			delete state.pending[contactId]
 		}
 
+		// Clear existing/stale connection with peer if already exists
+		if (state.connections[contactId] === connection) {
+			state.connections[contactId].close()
+			delete state.connections[contactId]
+		}
+
+		console.log('--- Opened a new connection with ', state.contacts[contactId].name, state.connections[contactId])
+
+		// Track the open connection
+		state.connections[contactId] = connection
+
 		// Log an "online" notice only when the contact changes from offline to online
-		if (!wasOnline && state.contacts[contactId]) {
+		if (contactWasOfflineBeforeConnection && state.contacts[contactId]) {
 			addMessage(contactId, 'system', 'online')
 		}
 		renderContacts()
@@ -107,11 +116,12 @@ function setupConn(connection) {
 	// Handle the connection closing
 	connection.on('close', () => {
 		// Remove the connection from the open list
-		const openConnections = state.connections[contactId] || []
-		const index = openConnections.indexOf(connection)
-		if (index < 0) {
+		const openConnections = state.connections[contactId]
+		if (!openConnections?.length) {
 			return
 		}
+
+		const index = openConnections.indexOf(connection)
 		openConnections.splice(index, 1)
 
 		console.log('openConnections', openConnections, state.connections[contactId])
@@ -133,16 +143,20 @@ function connectAll() {
 
 	Object.keys(state.contacts).forEach((contactId) => {
 		// Skip contacts that are already connected
-		if (isOnline(contactId)) {
-			return
-		}
+		// if (isOnline(contactId)) {
+		// 	return
+		// }
 
 		// Skip contacts with an attempt that started less than 20 seconds ago
-		if (state.pending[contactId]) {
-			if (Date.now() - state.pending[contactId].startedAt < 20000) {
-				return
-			}
-			state.pending[contactId].close()
+		// if (state.pending[contactId]) {
+		// 	if (Date.now() - state.pending[contactId].startedAt < 20000) {
+		// 		return
+		// 	}
+		// 	state.pending[contactId].close()
+		// }
+
+		if (state.pending[contactId] || state.connections[contactId]) {
+			return
 		}
 
 		// Start a new connection attempt

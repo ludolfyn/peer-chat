@@ -1,7 +1,7 @@
 import state from './state.js'
 
 // Returns true if at least one open connection exists for the contact.
-const isOnline = (contactId) => (state.connections[contactId] || []).length > 0
+const isOnline = (contactId) => (state.connections[contactId] ? true : false)
 
 // Validates and saves the contact from the modal, then refreshes the UI and attempts to connect.
 function saveContact() {
