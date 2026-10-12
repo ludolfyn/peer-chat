@@ -64,14 +64,14 @@ function setupConn(connection) {
 		}
 
 		// Clear existing/stale connection with peer if already exists
-		// if (state.connections[contactId]?.length) {
-		// 	state.connections[contactId].forEach((conn) => {
-		// 		conn.close()
-		// 	})
-		// }
+		if (state.connections[contactId]?.length) {
+			state.connections[contactId].forEach((conn) => {
+				conn.close()
+			})
+		}
 
 		// Track the open connection
-		state.connections[contactId] = state.connections[contactId] ?? []
+		state.connections[contactId] = []
 		state.connections[contactId].push(connection)
 
 		console.log('--- Opened a new connection with', state.contacts[contactId].name, state.connections[contactId])
