@@ -175,10 +175,10 @@ function connectAll() {
 
 // Pings every open connection and closes any that have been silent for over 9 seconds.
 function heartbeat() {
-	Object.values(state.connections).forEach((openConnections) => {
+	Object.values(state.connections).forEach((peerConnections) => {
 		// Iterate over a copy because closing a connection removes it from the list
-		const openConnectionsCopy = [...openConnections]
-		openConnectionsCopy.forEach((connection) => {
+		const peerConnectionsCopy = [...peerConnections]
+		peerConnectionsCopy.forEach((connection) => {
 			// Close connections that stopped responding
 			if (Date.now() - connection.lastSeen > 9000) {
 				connection.close()
@@ -186,8 +186,12 @@ function heartbeat() {
 			}
 
 			// Ping so the other side knows this connection is alive
-			connection.send({ type: 'ping', text: '' })
+			connection.send({ type: 'ping', text: String(Date.now()) })
 		})
+
+		if (!peerConnections.length) {
+			connectAll()
+		}
 	})
 }
 
