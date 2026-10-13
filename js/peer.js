@@ -186,7 +186,7 @@ function heartbeat() {
 			}
 
 			// Ping so the other side knows this connection is alive
-			connection.send({ type: 'ping' })
+			connection.send({ type: 'ping', text: '' })
 		})
 	})
 }
