@@ -1,10 +1,10 @@
-import state from './js/state.js'
-import { $ } from './js/utils.js'
-import { startPeer, setupConn, connectAll, heartbeat } from './js/peer.js'
-import { load, save } from './js/storage.js'
-import { isOnline, saveContact, deleteContact } from './js/contacts.js'
-import { addMessage, send } from './js/messages.js'
-import { renderContacts, renderChat, selectContact, openModal, closeModal } from './js/rendering.js'
+import state from './modules/state.js'
+import { $ } from './modules/utils.js'
+import { startPeer, setupConn, connectAll, heartbeat } from './modules/peer.js'
+import { load, save } from './modules/storage.js'
+import { isOnline, saveContact, deleteContact } from './modules/contacts.js'
+import { addMessage, send } from './modules/messages.js'
+import { renderContacts, renderChat, selectContact, openModal, closeModal } from './modules/rendering.js'
 
 // --- Connection ---
 // Retry offline contacts every 10 seconds
