@@ -35,8 +35,8 @@ function send() {
 	// Send over all open connections with a unique ID; the receiver ignores duplicates
 	const messageId = Date.now() + '-' + Math.random().toString(36).slice(2)
 	openConnections.forEach((connection) => {
-		connection.send({ id: messageId, text: text })
-		console.log('--- message sent: ', { id: messageId, text: text })
+		connection.send({ id: messageId, text: text, type: 'msg' })
+		console.log('--- message sent: ', { id: messageId, text: text, type: 'msg' })
 	})
 
 	// Store and clear the input

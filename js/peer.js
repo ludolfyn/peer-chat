@@ -141,26 +141,30 @@ function setupConn(connection) {
 }
 
 // Attempts to connect to every contact that is currently offline.
-function connectAll() {
+function connectAll(contactId = null) {
 	// Do nothing if the peer is not ready
 	if (!state.peer || state.peer.destroyed || state.peer.disconnected) {
 		return
 	}
 
+	// If contactId is passed, connect only to that contact
+	// otherwise connect to all contacts
+	if (contactId) {
+		if (state.pending[contactId] || state.connections[contactId]?.length) {
+			return
+		}
+
+		// Start a new connection attempt
+		const connection = state.peer.connect(contactId, { reliable: true })
+		connection.startedAt = Date.now()
+		state.pending[contactId] = connection
+		setupConn(connection)
+
+		return
+	}
+
+	// If not returned early, connect to all contacts
 	Object.keys(state.contacts).forEach((contactId) => {
-		// Skip contacts that are already connected
-		// if (isOnline(contactId)) {
-		// 	return
-		// }
-
-		// Skip contacts with an attempt that started less than 20 seconds ago
-		// if (state.pending[contactId]) {
-		// 	if (Date.now() - state.pending[contactId].startedAt < 20000) {
-		// 		return
-		// 	}
-		// 	state.pending[contactId].close()
-		// }
-
 		if (state.pending[contactId] || state.connections[contactId]?.length) {
 			return
 		}
@@ -175,6 +179,25 @@ function connectAll() {
 
 // Pings every open connection and closes any that have been silent for over 9 seconds.
 function heartbeat() {
+	for (let { contactId, contactConnections } in state.connections) {
+		const contactConnectionsCopy = [...contactConnections]
+		contactConnectionsCopy.forEach((connection) => {
+			// Close connections that stopped responding
+			if (Date.now() - connection.lastSeen > 9000) {
+				connection.close()
+				return
+			}
+
+			// Ping so the other side knows this connection is alive
+			const messageId = Date.now() + '-' + Math.random().toString(36).slice(2)
+			connection.send({ id: messageId, type: 'ping', text: String(Date.now()) })
+		})
+
+		if (!contactConnections.length) {
+			connectAll(contactId)
+		}
+	}
+
 	Object.values(state.connections).forEach((peerConnections) => {
 		// Iterate over a copy because closing a connection removes it from the list
 		const peerConnectionsCopy = [...peerConnections]
@@ -186,7 +209,8 @@ function heartbeat() {
 			}
 
 			// Ping so the other side knows this connection is alive
-			connection.send({ type: 'ping', text: String(Date.now()) })
+			const messageId = Date.now() + '-' + Math.random().toString(36).slice(2)
+			connection.send({ id: messageId, type: 'ping', text: String(Date.now()) })
 		})
 
 		if (!peerConnections.length) {
