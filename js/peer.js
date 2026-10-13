@@ -58,6 +58,9 @@ function setupConn(connection) {
 	const onOpen = () => {
 		const contactWasOfflineBeforeConnection = !isOnline(contactId)
 
+		// Start the silence timer for this connection
+		connection.lastSeen = Date.now()
+
 		// Clear the pending attempt if this connection was one
 		if (state.pending[contactId]) {
 			delete state.pending[contactId]
@@ -92,18 +95,20 @@ function setupConn(connection) {
 
 	// Handle incoming messages
 	connection.on('data', (data) => {
+		// Any received data proves the connection is alive
+		connection.lastSeen = Date.now()
+
 		// Ignore malformed data
 		if (!data || typeof data.text !== 'string') {
 			return
 		}
 
-		// Ignore messages already received over another connection
-		// if (data.id) {
-		// 	if (seenMessageIds.has(data.id)) {
-		// 		return
-		// 	}
-		// 	seenMessageIds.add(data.id)
-		// }
+		console.log('--- incoming msg:', data)
+
+		// Ignore heartbeat pings
+		if (data?.type === 'ping') {
+			return
+		}
 
 		// Create an untitled contact if the sender is unknown
 		if (!state.contacts[contactId]) {
@@ -168,4 +173,22 @@ function connectAll() {
 	})
 }
 
-export { startPeer, setupConn, connectAll }
+// Pings every open connection and closes any that have been silent for over 9 seconds.
+function heartbeat() {
+	Object.values(state.connections).forEach((openConnections) => {
+		// Iterate over a copy because closing a connection removes it from the list
+		const openConnectionsCopy = [...openConnections]
+		openConnectionsCopy.forEach((connection) => {
+			// Close connections that stopped responding
+			if (Date.now() - connection.lastSeen > 9000) {
+				connection.close()
+				return
+			}
+
+			// Ping so the other side knows this connection is alive
+			connection.send({ type: 'ping' })
+		})
+	})
+}
+
+export { startPeer, setupConn, connectAll, heartbeat }

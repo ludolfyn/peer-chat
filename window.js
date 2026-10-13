@@ -1,6 +1,6 @@
 import state from './js/state.js'
 import { $ } from './js/utils.js'
-import { startPeer, setupConn, connectAll } from './js/peer.js'
+import { startPeer, setupConn, connectAll, heartbeat } from './js/peer.js'
 import { load, save } from './js/storage.js'
 import { isOnline, saveContact, deleteContact } from './js/contacts.js'
 import { addMessage, send } from './js/messages.js'
@@ -8,7 +8,10 @@ import { renderContacts, renderChat, selectContact, openModal, closeModal } from
 
 // --- Connection ---
 // Retry offline contacts every 10 seconds
-setInterval(connectAll, 10000)
+// setInterval(connectAll, 10000)
+
+// Run the heartbeat every 3 seconds
+setInterval(heartbeat, 3000)
 
 // Destroy the peer connection when the window closes
 window.addEventListener('beforeunload', () => {
