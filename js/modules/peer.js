@@ -179,7 +179,8 @@ function connectAll(contactId = null) {
 
 // Pings every open connection and closes any that have been silent for over 9 seconds.
 function heartbeat() {
-	for (let { contactId, contactConnections } in state.connections) {
+	for (const contactId in state.connections) {
+		const contactConnections = state.connections[contactId]
 		const contactConnectionsCopy = [...contactConnections]
 		contactConnectionsCopy.forEach((connection) => {
 			// Close connections that stopped responding
