@@ -7,10 +7,7 @@ import { addMessage, send } from './modules/messages.js'
 import { renderContacts, renderChat, selectContact, openModal, closeModal } from './modules/rendering.js'
 
 // --- Connection ---
-// Retry offline contacts every 10 seconds
-// setInterval(connectAll, 10000)
-
-// Run the heartbeat every 3 seconds
+// Run the heartbeat on every contact every 3 seconds
 setInterval(heartbeat, 3000)
 
 // Destroy the peer connection when the window closes

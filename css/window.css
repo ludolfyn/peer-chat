@@ -1,0 +1,180 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.hide {
+  display: none;
+}
+
+textarea {
+  font-family: inherit;
+}
+
+#sidebar {
+  width: 220px;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+#sidebar #myId {
+  padding: 8px;
+  background: #f0f0f0;
+  word-break: break-all;
+  -webkit-user-select: all;
+     -moz-user-select: all;
+          user-select: all;
+  font-size: 12px;
+}
+#sidebar #addBtn {
+  margin: 8px;
+}
+#sidebar #contacts {
+  flex: 1;
+  overflow-y: auto;
+}
+#sidebar #contacts .contact {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+#sidebar #contacts .contact:hover {
+  background: #f7f7f7;
+}
+#sidebar #contacts .contact.selected {
+  background: #dce9ff;
+}
+#sidebar #contacts .contact.unknown {
+  background: #fff6d6;
+  border-left: 4px solid #e0a800;
+}
+#sidebar #contacts .contact.unknown.selected {
+  background: #ffe9a0;
+}
+#sidebar #contacts .contact .status {
+  font-size: 11px;
+  color: #777;
+}
+#sidebar #contacts .contact button {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+#chat {
+  flex: 1;
+  height: 100vh;
+  position: relative;
+  overflow-y: auto;
+}
+#chat #messages {
+  flex: 1;
+  padding: 20px 20px 85px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#chat #messages .msg {
+  min-width: 30%;
+  max-width: 85%;
+  padding: 8px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  text-align: left;
+  position: relative;
+}
+#chat #messages .msg strong {
+  margin-bottom: 4px;
+  display: block;
+}
+#chat #messages .msg .timestamp {
+  font-size: 10px;
+  color: #bbb;
+  position: absolute;
+  bottom: 0;
+  right: 4px;
+}
+#chat #messages .msg.me {
+  margin-left: auto;
+  background-color: #f3f3f3;
+}
+#chat #messages .msg.me .timestamp {
+  left: -45px;
+}
+#chat #messages .msg.contact {
+  margin-right: auto;
+  background-color: #eee;
+}
+#chat #messages .msg.contact .timestamp {
+  right: -45px;
+}
+#chat #messages .msg.system {
+  margin: 10px 0;
+  text-align: center;
+}
+#chat #messages .system {
+  font-style: italic;
+  color: #777;
+}
+#chat #inputRow {
+  width: calc(100% - 260px);
+  margin: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  bottom: 20px;
+  left: 240px;
+  overflow: hidden;
+}
+#chat #inputRow.hide {
+  display: none;
+}
+#chat #inputRow #input {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+}
+#chat #inputRow #sendBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#modal.hidden {
+  display: none;
+}
+#modal #modalBox {
+  width: 300px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#modal #modalBox textarea {
+  height: 70px;
+  resize: none;
+}/*# sourceMappingURL=window.css.map */

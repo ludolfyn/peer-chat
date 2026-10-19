@@ -54,11 +54,14 @@ function renderChat() {
 	box.innerHTML = ''
 
 	// Enable the input only when a contact is selected
-	$('#input').disabled = $('#sendBtn').disabled = !state.selected
 	if (!state.selected) {
 		box.textContent = 'Select a contact.'
+		$('#inputRow').classList.add('hide')
 		return
 	}
+
+	$('#input').disabled = $('#sendBtn').disabled = !state.selected
+	$('#inputRow').classList.remove('hide')
 
 	// Render each message
 	const contactName = state.contacts[state.selected].name
@@ -67,7 +70,7 @@ function renderChat() {
 
 		if (message.from === 'system') {
 			// System notices are shown in italic (styled via the "system" class)
-			element.className = 'system'
+			element.className = 'msg system'
 			element.textContent =
 				message.text === 'online'
 					? `${contactName} is online`
@@ -76,9 +79,20 @@ function renderChat() {
 						: `Message not sent: ${contactName} is offline`
 		} else {
 			// Regular messages show the sender name followed by the text
-			const sender = document.createElement('b')
-			sender.textContent = (message.from === 'me' ? 'Me' : contactName) + ': '
-			element.append(sender, document.createTextNode(message.text))
+			const senderName = message.from === 'me' ? 'Me' : contactName
+			const senderClass = message.from === 'me' ? 'me' : 'contact'
+
+			const sender = document.createElement('strong')
+			sender.textContent = `${senderName}: `
+
+			const timeElem = document.createElement('div')
+			const t = Temporal.Now.zonedDateTimeISO().toLocaleString().slice(0, -4).slice(12)
+			const timeString = `${t.split(':')[0]}:${t.split(':')[1]} ${t.split(':')[2].slice(3)}`
+			timeElem.textContent = `${timeString}`
+			timeElem.classList.add('timestamp')
+
+			element.classList.add('msg', senderClass)
+			element.append(document.createTextNode(message.text), timeElem)
 		}
 
 		box.append(element)
