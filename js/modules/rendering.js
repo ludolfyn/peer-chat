@@ -1,6 +1,6 @@
 import state from './state.js'
 import { $ } from './utils.js'
-import { isOnline } from './contacts.js'
+import { isOnline, deleteContact, saveContact } from './contacts.js'
 
 // Rebuilds the contact list with names, online status, and rename/delete buttons for unknown contacts.
 function renderContacts() {
@@ -50,7 +50,8 @@ function renderContacts() {
 
 // Rebuilds the chat panel with the selected contact's messages and system notices.
 function renderChat() {
-	const box = $('#messages')
+	const boxWrap = $('#chat')
+	const box = $('#messages', boxWrap)
 	box.innerHTML = ''
 
 	// Enable the input only when a contact is selected
@@ -67,39 +68,51 @@ function renderChat() {
 	const contactName = state.contacts[state.selected].name
 	;(state.messages[state.selected] || []).forEach((message) => {
 		const element = document.createElement('div')
+		const addDashes = (str) => {
+			const strLen = str.length
+			const maxLen = 65
+			const openSpace = Math.floor((maxLen - strLen) / 2)
+			const dashes = Array(openSpace).fill('-').join('')
+			return `${dashes} ${str} ${dashes}`
+		}
 
 		if (message.from === 'system') {
 			// System notices are shown in italic (styled via the "system" class)
 			element.className = 'msg system'
-			element.textContent =
+			const msg =
 				message.text === 'online'
 					? `${contactName} is online`
 					: message.text === 'offline'
 						? `${contactName} disconnected`
 						: `Message not sent: ${contactName} is offline`
+			element.textContent = addDashes(msg)
 		} else {
 			// Regular messages show the sender name followed by the text
 			const senderName = message.from === 'me' ? 'Me' : contactName
 			const senderClass = message.from === 'me' ? 'me' : 'contact'
 
-			const sender = document.createElement('strong')
-			sender.textContent = `${senderName}: `
-
+			const messageReceivedTime = message.receivedDateTime ?? Temporal.Now.zonedDateTimeISO()
+			const timeString = messageReceivedTime.toLocaleString('en-US', { timeStyle: 'short' })
 			const timeElem = document.createElement('div')
-			const t = Temporal.Now.zonedDateTimeISO().toLocaleString().slice(0, -4).slice(12)
-			const timeString = `${t.split(':')[0]}:${t.split(':')[1]} ${t.split(':')[2].slice(3)}`
 			timeElem.textContent = `${timeString}`
 			timeElem.classList.add('timestamp')
 
 			element.classList.add('msg', senderClass)
-			element.append(document.createTextNode(message.text), timeElem)
+			const msgText = document.createElement('span')
+			msgText.textContent = message.text
+
+			element.append(msgText, timeElem)
 		}
 
 		box.append(element)
 	})
 
 	// Scroll to the latest message
-	box.scrollTop = box.scrollHeight
+	// boxWrap.scrollTop = boxWrap.scrollHeight
+	boxWrap.scrollTo({
+		top: box.scrollHeight,
+		behavior: 'smooth'
+	})
 }
 
 // Selects a contact, shows their chat, and focuses the message input.

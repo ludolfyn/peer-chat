@@ -34,8 +34,9 @@ function send() {
 
 	// Send over all open connections with a unique ID; the receiver ignores duplicates
 	const messageId = Date.now() + '-' + Math.random().toString(36).slice(2)
+	const sentDateTime = Temporal.Now.zonedDateTimeISO()
 	openConnections.forEach((connection) => {
-		connection.send({ id: messageId, text: text, type: 'msg' })
+		connection.send({ id: messageId, text: text, type: 'msg', sentDateTime: sentDateTime, receivedDateTime: null })
 		console.log('--- message sent: ', { id: messageId, text: text, type: 'msg' })
 	})
 

@@ -80,6 +80,7 @@ textarea {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 #chat #messages .msg {
   min-width: 30%;
@@ -87,6 +88,8 @@ textarea {
   padding: 8px;
   margin-bottom: 4px;
   border-radius: 10px;
+  color: #000;
+  font-size: 14px;
   text-align: left;
   position: relative;
 }
@@ -105,6 +108,9 @@ textarea {
   margin-left: auto;
   background-color: #f3f3f3;
 }
+#chat #messages .msg.me:not(:has(+ .me)) {
+  margin-bottom: 20px;
+}
 #chat #messages .msg.me .timestamp {
   left: -45px;
 }
@@ -112,16 +118,21 @@ textarea {
   margin-right: auto;
   background-color: #eee;
 }
+#chat #messages .msg.contact:not(:has(+ .contact)) {
+  margin-bottom: 20px;
+}
 #chat #messages .msg.contact .timestamp {
   right: -45px;
 }
 #chat #messages .msg.system {
-  margin: 10px 0;
+  max-width: 90%;
+  margin: 0 0;
+  color: #a5a5a5;
   text-align: center;
-}
-#chat #messages .system {
   font-style: italic;
-  color: #777;
+}
+#chat #messages .msg.system:not(:has(+ .system)) {
+  margin-bottom: 20px;
 }
 #chat #inputRow {
   width: calc(100% - 260px);

@@ -26,7 +26,13 @@ $('#sendBtn').onclick = send
 // Send the message when Enter is pressed in the input
 $('#input').addEventListener('keydown', (event) => {
 	if (event.key === 'Enter') {
-		send()
+		if (event.shiftKey) {
+			// 1. Shift + Enter is pressed
+			// The browser automatically inserts a line break here by default.
+		} else {
+			event.preventDefault()
+			send()
+		}
 	}
 })
 

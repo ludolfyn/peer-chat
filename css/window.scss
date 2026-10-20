@@ -82,13 +82,12 @@ textarea {
 
 	#messages {
 		flex: 1;
-		// height: 100vh;
 		padding: 20px 20px 85px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		// overflow-y: auto;
+		overflow: hidden;
 
 		.msg {
 			min-width: 30%;
@@ -96,6 +95,8 @@ textarea {
 			padding: 8px;
 			margin-bottom: 4px;
 			border-radius: 10px;
+			color: #000;
+			font-size: 14px;
 			text-align: left;
 			position: relative;
 
@@ -116,6 +117,10 @@ textarea {
 				margin-left: auto;
 				background-color: #f3f3f3;
 
+				&:not(:has(+ .me)) {
+					margin-bottom: 20px;
+				}
+
 				.timestamp {
 					left: -45px;
 				}
@@ -125,20 +130,26 @@ textarea {
 				margin-right: auto;
 				background-color: #eee;
 
+				&:not(:has(+ .contact)) {
+					margin-bottom: 20px;
+				}
+
 				.timestamp {
 					right: -45px;
 				}
 			}
 
 			&.system {
-				margin: 10px 0;
+				max-width: 90%;
+				margin: 0 0;
+				color: #a5a5a5;
 				text-align: center;
-			}
-		}
+				font-style: italic;
 
-		.system {
-			font-style: italic;
-			color: #777;
+				&:not(:has(+ .system)) {
+					margin-bottom: 20px;
+				}
+			}
 		}
 	}
 

@@ -103,10 +103,12 @@ function setupConn(connection) {
 			return
 		}
 
+		data.receivedDateTime = Temporal.Now.zonedDateTimeISO()
+
 		console.log('--- incoming msg:', data)
 
 		// Ignore heartbeat pings
-		if (data?.type === 'ping') {
+		if (data.type === 'ping') {
 			return
 		}
 
