@@ -9,7 +9,7 @@ chrome.action.onClicked.addListener(async () => {
 	const win = await chrome.windows.create({
 		url: 'window.html',
 		type: 'popup',
-		width: 720,
+		width: 760,
 		height: 520
 	})
 	await chrome.storage.session.set({ winId: win.id })

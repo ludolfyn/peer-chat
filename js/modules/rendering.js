@@ -61,16 +61,24 @@ function renderChat() {
 		return
 	}
 
-	$('#input').disabled = $('#sendBtn').disabled = !state.selected
 	$('#inputRow').classList.remove('hide')
+	$('#input').disabled = $('#sendBtn').disabled = !state.selected
+	const contactName = state.contacts[state.selected].name
+
+	// Render the chat header
+	const chatHeaderElement = `<div id="chat-header">
+		<div class="contact-name">${contactName}</div>
+		<div class="contact-status">${isOnline(state.selected) ? 'Online' : 'Offline'}</div>
+	</div>`
+	boxWrap.insertAdjacentHTML('afterbegin', chatHeaderElement)
 
 	// Render each message
-	const contactName = state.contacts[state.selected].name
-	;(state.messages[state.selected] || []).forEach((message) => {
+	const messages = state.messages[state.selected] ?? []
+	messages.forEach((message) => {
 		const element = document.createElement('div')
 		const addDashes = (str) => {
 			const strLen = str.length
-			const maxLen = 65
+			const maxLen = 70
 			const openSpace = Math.floor((maxLen - strLen) / 2)
 			const dashes = Array(openSpace).fill('-').join('')
 			return `${dashes} ${str} ${dashes}`
@@ -79,12 +87,18 @@ function renderChat() {
 		if (message.from === 'system') {
 			// System notices are shown in italic (styled via the "system" class)
 			element.className = 'msg system'
-			const msg =
-				message.text === 'online'
-					? `${contactName} is online`
-					: message.text === 'offline'
-						? `${contactName} disconnected`
-						: `Message not sent: ${contactName} is offline`
+			let msg = ''
+
+			if (message.text === 'online') {
+				msg = `${contactName} is online`
+			}
+			if (message.text === 'offline') {
+				msg = `${contactName} disconnected`
+			}
+			if (message.text === 'unsent') {
+				msg = `Message not sent: ${contactName} is offline`
+			}
+
 			element.textContent = addDashes(msg)
 		} else {
 			// Regular messages show the sender name followed by the text
@@ -111,7 +125,7 @@ function renderChat() {
 	// boxWrap.scrollTop = boxWrap.scrollHeight
 	boxWrap.scrollTo({
 		top: box.scrollHeight,
-		behavior: 'smooth'
+		behavior: 'instant'
 	})
 }
 

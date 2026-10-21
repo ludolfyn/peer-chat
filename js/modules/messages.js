@@ -7,7 +7,7 @@ import { renderChat } from './rendering.js'
 function addMessage(contactId, sender, text) {
 	// Add to the contact's history and persist it
 	const msgesLength = state.messages[contactId] ? state.messages[contactId].length : 0 // for slicing last 100
-	state.messages[contactId] = state.messages[contactId].slice(msgesLength - 99, msgesLength) || []
+	state.messages[contactId] = state.messages[contactId]?.slice(msgesLength - 99, msgesLength) ?? []
 	state.messages[contactId].push({ from: sender, text: text })
 	save('messages', state.messages)
 
