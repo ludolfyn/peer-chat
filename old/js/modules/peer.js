@@ -112,6 +112,11 @@ function setupConn(connection) {
 			return
 		}
 
+		// Ignore delivery receipts
+		if (data.type === 'delivery-receipt') {
+			return
+		}
+
 		// Create an untitled contact if the sender is unknown
 		if (!state.contacts[contactId]) {
 			state.contacts[contactId] = { name: 'Untitled', unknown: true }
